@@ -18,7 +18,18 @@ public final class Constants {
   }
 
   public static class MotorIDs {
-    public static final int iIntake = 999;
+    public static final int iIntake = 13;
+    public static final int iHopperExtender = 14;
+    public static final int iIndexer = 15;
+    public static final int iFeeder = 16;
+    public static final int iHood = 17;
+    public static final int iShooter = 18;
+    public static final int iClimbR = 19;
+    public static final int iClimbL = 20;
+  }
+
+  public static class MotorSpeeds{
+  public static final double dShooterSpeed = 0.15;
   }
 
   
