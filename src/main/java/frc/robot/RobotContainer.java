@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.Constants.MotorSpeeds;
+import frc.robot.commands.Photon_Lock;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
@@ -81,8 +82,13 @@ public class RobotContainer {
         // Reset the field-centric heading on leftbumper press.
         xboxDriver.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
-        xboxOperator.a().whileTrue(
-                objShooter.runShooter(MotorSpeeds.dShooterSpeed));
+
+        xboxOperator.b().whileTrue(new Photon_Lock(drivetrain, MaxSpeed, MaxAngularRate, 
+                () -> xboxOperator.getLeftX(), 
+                () -> xboxOperator.getLeftY()));
+        
+        xboxOperator.a().whileTrue(new RunCommand(() -> objShooter.runShooter(0.5), objShooter))
+                        .whileFalse(new RunCommand(() -> objShooter.stopShooter(), objShooter));
         
         
 
