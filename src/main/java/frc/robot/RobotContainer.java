@@ -16,11 +16,15 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.Constants.MotorSpeeds;
 import frc.robot.commands.Photon_Lock;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+
+import frc.robot.subsystems.Shooter.Shooter;
+import frc.robot.subsystems.Shooter.Feeder;
+
+import frc.robot.commands.FeedNShoot;
 
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -43,6 +47,7 @@ public class RobotContainer {
 
     // === SUBSYSTEM OBJECTS === \\
     private final Shooter objShooter = new Shooter();
+    private final Feeder objFeeder = new Feeder();
 
     public RobotContainer() {
         configureBindings();
@@ -83,12 +88,17 @@ public class RobotContainer {
         xboxDriver.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
 
-        xboxOperator.b().whileTrue(new Photon_Lock(drivetrain, MaxSpeed, MaxAngularRate, 
+        xboxOperator.rightBumper().whileTrue(new Photon_Lock(drivetrain, MaxSpeed, MaxAngularRate, 
                 () -> xboxOperator.getLeftX(), 
                 () -> xboxOperator.getLeftY()));
         
-        xboxOperator.a().whileTrue(new RunCommand(() -> objShooter.runShooter(0.5), objShooter))
+        xboxOperator.a().whileTrue(new RunCommand(() -> objShooter.runShooter(MotorSpeeds.dShooterSpeed), objShooter))
                         .whileFalse(new RunCommand(() -> objShooter.stopShooter(), objShooter));
+        
+        xboxOperator.b().whileTrue(new RunCommand(() -> objFeeder.runFeeder(MotorSpeeds.dFeederSpeed), objFeeder))
+                        .whileFalse(new RunCommand(() -> objFeeder.stopFeeder(), objFeeder));
+
+        xboxOperator.axisGreaterThan(2, 0.5).whileTrue(new FeedNShoot(objFeeder, objShooter));
         
         
 
