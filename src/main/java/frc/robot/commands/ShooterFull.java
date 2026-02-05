@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.Constants.MotorSpeeds;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -23,9 +24,9 @@ public class ShooterFull extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new RunCommand(() -> objShooter.runShooter(MotorSpeeds.dShooterSpeed), objShooter),
-      new WaitCommand(0.5),
-      new ParallelRaceGroup(
+      new ParallelCommandGroup(
+        new RunCommand(() -> objShooter.runShooter(MotorSpeeds.dShooterSpeed), objShooter),
+        new WaitCommand(0.5),
         new RunCommand(() -> objFeeder.runFeeder(MotorSpeeds.dFeederSpeed), objFeeder),
         new RunCommand(() -> objIndexer.runIndexer(0), objIndexer)
       )
