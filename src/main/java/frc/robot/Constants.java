@@ -30,6 +30,8 @@ public final class Constants {
 
   public static class MotorSpeeds{
   public static final double dShooterSpeed = 0.15;
+  public static final double dFeederSpeed = 0.15;
+  public static final double dIndexerSpeed = 0.15;
   }
 
   
