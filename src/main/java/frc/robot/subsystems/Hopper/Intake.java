@@ -18,7 +18,6 @@ public class Intake extends SubsystemBase {
   private TalonFX objIntake = new TalonFX(MotorIDs.iIntake);
   private StatusCode objTalonFXStatusCode;
   private StatusSignal objStatusSignal;
-  private int iCount = 0;
   
   /** Creates a new Intake. */
   public Intake() {

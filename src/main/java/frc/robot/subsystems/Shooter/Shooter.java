@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.Shooter;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -17,8 +19,7 @@ public class Shooter extends SubsystemBase {
   private TalonFX objShooter = new TalonFX(MotorIDs.iShooter);
   private StatusCode objTalonFXStatusCode;
   private StatusSignal objStatusSignal;
-  private int iCount = 0;
-  private Runnable objShooterRunnable;
+  public boolean bShooterSpeed = false;
   
   /** Creates a new Shooter. */
   public Shooter() {
@@ -35,6 +36,8 @@ public class Shooter extends SubsystemBase {
       if (objTalonFXStatusCode.isOK()) break;
     }
 
+    
+
   }
 
   @Override
@@ -42,6 +45,13 @@ public class Shooter extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
+  public boolean bShooterFast(){
+    if (objShooter.get() > 0.5) {
+      return true;
+    }
+    
+    else return false;
+  }
    
   public void stopShooter(){
     objShooter.stopMotor();
