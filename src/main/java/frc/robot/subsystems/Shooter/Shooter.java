@@ -11,7 +11,9 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.StatusSignal;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.MotorIDs;
 
@@ -20,6 +22,7 @@ public class Shooter extends SubsystemBase {
   private StatusCode objTalonFXStatusCode;
   private StatusSignal objStatusSignal;
   public boolean bShooterSpeed = false;
+  StatusSignal objStatSig;
   
   /** Creates a new Shooter. */
   public Shooter() {
@@ -43,9 +46,10 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Shooter Speed RPM", getSpeedRPM());
   }
 
-  public boolean bShooterFast(){
+  public boolean bsShooterFast(){
     if (objShooter.get() > 0.5) {
       return true;
     }
@@ -59,5 +63,10 @@ public class Shooter extends SubsystemBase {
 
   public void runShooter(double dSpeed){
     objShooter.set(dSpeed);
+  }
+
+  public double getSpeedRPM() {
+    objStatSig = objShooter.getVelocity();
+    return objStatSig.getValueAsDouble() * 60.0;  
   }
 }

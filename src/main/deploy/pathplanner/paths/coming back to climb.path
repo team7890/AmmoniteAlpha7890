@@ -1,0 +1,108 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.704822222222223,
+        "y": 7.240922222222221
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.0486738627357735,
+        "y": 7.473818085275004
+      },
+      "isLocked": false,
+      "linkedName": "End of Passing"
+    },
+    {
+      "anchor": {
+        "x": 2.5694999999999997,
+        "y": 7.3968333333333325
+      },
+      "prevControl": {
+        "x": 3.5133486708325727,
+        "y": 7.418043415823954
+      },
+      "nextControl": {
+        "x": 1.7022444444444438,
+        "y": 7.377344444444442
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.1273222222222221,
+        "y": 6.032611111111111
+      },
+      "prevControl": {
+        "x": 1.0444283773432064,
+        "y": 6.743129781502676
+      },
+      "nextControl": {
+        "x": 1.1955333333333331,
+        "y": 5.4479444444444445
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.4001666666666668,
+        "y": 4.824300000000001
+      },
+      "prevControl": {
+        "x": 1.1857888888888892,
+        "y": 5.662322222222222
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.47703984819734435,
+      "rotationDegrees": -0.9123087608512659
+    },
+    {
+      "waypointRelativePos": 1.9616698292219712,
+      "rotationDegrees": 6.80994047218106
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "intake Depot",
+      "waypointRelativePos": 1.7236607142856908,
+      "endWaypointRelativePos": 2.527232142857106,
+      "command": null
+    },
+    {
+      "name": "shoot Depot balls",
+      "waypointRelativePos": 3.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 41.4236656250026
+  },
+  "reversed": false,
+  "folder": "Passing auto",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -90.0
+  },
+  "useDefaultConstraints": true
+}

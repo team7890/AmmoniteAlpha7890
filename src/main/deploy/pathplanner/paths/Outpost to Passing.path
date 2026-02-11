@@ -1,0 +1,61 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.4647000000000001,
+        "y": 0.6439333333333332
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.335633333333333,
+        "y": 0.546488888888889
+      },
+      "isLocked": false,
+      "linkedName": "Outpost End"
+    },
+    {
+      "anchor": {
+        "x": 7.695077777777778,
+        "y": 0.6439333333333332
+      },
+      "prevControl": {
+        "x": 6.695077777777778,
+        "y": 0.6439333333333332
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Beginning of Passing "
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Extend intake/hopper",
+      "waypointRelativePos": 0.6924107142857127,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -90.0
+  },
+  "reversed": false,
+  "folder": "outpost auto",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}

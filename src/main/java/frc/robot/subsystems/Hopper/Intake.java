@@ -26,7 +26,7 @@ public class Intake extends SubsystemBase {
     objTalonFXConfig.CurrentLimits.SupplyCurrentLimit = 100.0;
     objTalonFXConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     objTalonFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    objTalonFXConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.5;
+    objTalonFXConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.15;
     objTalonFXStatusCode = StatusCode.StatusCodeNotInitialized;
 
     for (int i = 1; i < 5; i++) {

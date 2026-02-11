@@ -5,12 +5,14 @@
 package frc.robot.subsystems.Hopper;
 
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.MotorIDs;
+import frc.robot.Constants;
 
 public class Indexer extends SubsystemBase {
 
@@ -19,10 +21,10 @@ public class Indexer extends SubsystemBase {
   /** Creates a new Hopper. */
   public Indexer() {
     TalonFXConfiguration objTalonFXConfig = new TalonFXConfiguration();
-    objTalonFXConfig.CurrentLimits.SupplyCurrentLimit = 100.0;
+    //objTalonFXConfig.CurrentLimits.SupplyCurrentLimit = 100.0;
     objTalonFXConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     objTalonFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    objTalonFXConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.5;
+    objTalonFXConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.15;
     objTalonFXStatusCode = StatusCode.StatusCodeNotInitialized;
 
     for (int i = 1; i < 5; i++) {

@@ -24,7 +24,7 @@ public class Feeder extends SubsystemBase {
   public Feeder() {
 
     TalonFXConfiguration objTalonFXConfig = new TalonFXConfiguration();
-    objTalonFXConfig.CurrentLimits.SupplyCurrentLimit = 100.0;
+    //objTalonFXConfig.CurrentLimits.SupplyCurrentLimit = 500.0;
     objTalonFXConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     objTalonFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     objTalonFXConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.5;

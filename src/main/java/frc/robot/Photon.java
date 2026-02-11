@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Photon extends SubsystemBase {
 
-  static PhotonCamera objCamera = new PhotonCamera("OV9281");
+  static PhotonCamera objCamera = new PhotonCamera("Dragon");
     static double dYaw;
     static double dPitch;
     static double dArea;
@@ -76,7 +76,10 @@ public class Photon extends SubsystemBase {
 
     // Get information from target.
     // dYaw = target.getYaw();
-    dPitch = target.getPitch();
+    if (bHasTarget) {
+      dPitch = target.getPitch();
+    }
+    else {dPitch = 7890.0;}
     // double dArea = target.getArea();
     // double dSkew = target.getSkew();
     
@@ -96,7 +99,10 @@ public class Photon extends SubsystemBase {
     // Get information from target.
     // dYaw = target.getYaw();
     // double dPitch = target.getPitch();
-    dArea = target.getArea();
+    if (bHasTarget) {
+      dArea = target.getArea();
+    }
+    else {dArea = 7890.0;}
     // double dSkew = target.getSkew();
     
     // int targetID = target.getFiducialId();

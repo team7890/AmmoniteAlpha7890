@@ -12,22 +12,28 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.MotorSpeeds;
 import frc.robot.commands.Photon_Lock;
-import frc.robot.generated.TunerConstants;
+import frc.robot.commands.ShooterFull;
+import frc.robot.generated.TunerConstants_alpha;
+import frc.robot.generated.TunerConstants_comp;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-
+import frc.robot.subsystems.Hopper.Indexer;
 import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.subsystems.Shooter.Feeder;
 
-import frc.robot.commands.FeedNShoot;
+import frc.robot.commands.FireNTheHole;
+import frc.robot.commands.PhotonDrive;
 
 public class RobotContainer {
-    private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+     private double MaxSpeed = 1.0 * TunerConstants_alpha.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    // private double MaxSpeed = 1.0 * TunerConstants_beta.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
@@ -43,12 +49,15 @@ public class RobotContainer {
     private final CommandXboxController xboxDriver = new CommandXboxController(0);
     private final CommandXboxController xboxOperator = new CommandXboxController(1);
 
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    // public final CommandSwerveDrivetrain drivetrain = TunerConstants_beta.createDrivetrain(); 
+    public final CommandSwerveDrivetrain drivetrain = TunerConstants_alpha.createDrivetrain(); // comment out the other one for the comp chassi
 
     // === SUBSYSTEM OBJECTS === \\
     private final Shooter objShooter = new Shooter();
     private final Feeder objFeeder = new Feeder();
+    private final Indexer objIndexer = new Indexer();
 
+    
     public RobotContainer() {
         configureBindings();
     }
@@ -56,6 +65,8 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
+
+                                             ///SET DEFAULTCOMANDS ///
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
@@ -65,6 +76,18 @@ public class RobotContainer {
             )
         );
 
+        objFeeder.setDefaultCommand(
+            new RunCommand(()-> objFeeder.stopFeeder(), objFeeder)
+        );
+
+        objIndexer.setDefaultCommand(
+            new RunCommand(()->objIndexer.stopIndexer(), objIndexer)
+        );
+
+        objShooter.setDefaultCommand(
+            new RunCommand(()->objShooter.runShooter(0.1), objShooter)
+        );
+        
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
         final var idle = new SwerveRequest.Idle();
@@ -88,18 +111,36 @@ public class RobotContainer {
         xboxDriver.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
 
-        xboxOperator.rightBumper().whileTrue(new Photon_Lock(drivetrain, MaxSpeed, MaxAngularRate, 
+        xboxDriver.rightBumper().whileTrue(new Photon_Lock(drivetrain, MaxSpeed, MaxAngularRate, 
                 () -> xboxOperator.getLeftX(), 
                 () -> xboxOperator.getLeftY()));
         
-        xboxOperator.a().whileTrue(new RunCommand(() -> objShooter.runShooter(MotorSpeeds.dShooterSpeed), objShooter))
-                        .whileFalse(new RunCommand(() -> objShooter.stopShooter(), objShooter));
-        
-        xboxOperator.b().whileTrue(new RunCommand(() -> objFeeder.runFeeder(MotorSpeeds.dFeederSpeed), objFeeder))
-                        .whileFalse(new RunCommand(() -> objFeeder.stopFeeder(), objFeeder));
 
-        xboxOperator.axisGreaterThan(2, 0.5).whileTrue(new FeedNShoot(objFeeder, objShooter));
+
+       // xboxOperator.a().whileTrue(new RunCommand(() -> objShooter.runShooter(MotorSpeeds.dShooterSpeed), objShooter))
+       //                 .whileFalse(new RunCommand(() -> objShooter.stopShooter(), objShooter));
         
+        //xboxOperator.b().whileTrue(new RunCommand(() -> objFeeder.runFeeder(MotorSpeeds.dFeederSpeed), objFeeder))
+        //                .whileFalse(new RunCommand(() -> objFeeder.stopFeeder(), objFeeder));
+
+       // xboxOperator.y().whileTrue(new RunCommand(()-> objIndexer. runIndexer(MotorSpeeds.dIndexerSpeed), objIndexer))
+                        // .whileFalse(new RunCommand(()-> objIndexer.stopIndexer(), objIndexer));
+
+
+
+        xboxDriver.a ().whileTrue(new RunCommand(() -> objShooter.runShooter(MotorSpeeds.dShooterSpeed), objShooter));
+                    //    .whileFalse(new RunCommand(() -> objShooter.setDefaultCommand(0.15), objShooter) );
+        
+        xboxDriver. rightTrigger() .whileTrue(new FireNTheHole(objFeeder, objIndexer)
+                                    .until(() -> xboxDriver.getRightTriggerAxis() < 0.01)
+        );
+
+        xboxDriver.b().whileTrue(new PhotonDrive(drivetrain, MaxSpeed, MaxAngularRate));
+                                  
+
+
+        xboxOperator.axisGreaterThan(2, 0.5).whileTrue(new ShooterFull(objShooter, objFeeder, objIndexer));
+
         
 
         drivetrain.registerTelemetry(logger::telemeterize);
