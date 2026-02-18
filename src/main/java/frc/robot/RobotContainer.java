@@ -21,18 +21,19 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.MotorSpeeds;
 import frc.robot.commands.Photon_Lock;
 import frc.robot.commands.ShooterFull;
-import frc.robot.generated.TunerConstants_alpha;
-import frc.robot.generated.TunerConstants_comp;
+import frc.robot.generated.TunerConstants;
+// import frc.robot.generated.TunerConstants_comp;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Hopper.Indexer;
 import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.subsystems.Shooter.Feeder;
 
 import frc.robot.commands.FireNTheHole;
-import frc.robot.commands.PhotonDrive;
+import frc.robot.commands.ManualFire;
+// import frc.robot.commands.PhotonDrive;
 
 public class RobotContainer {
-     private double MaxSpeed = 1.0 * TunerConstants_alpha.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     // private double MaxSpeed = 1.0 * TunerConstants_beta.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
@@ -50,7 +51,7 @@ public class RobotContainer {
     private final CommandXboxController xboxOperator = new CommandXboxController(1);
 
     // public final CommandSwerveDrivetrain drivetrain = TunerConstants_beta.createDrivetrain(); 
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants_alpha.createDrivetrain(); // comment out the other one for the comp chassi
+    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain(); // comment out the other one for the comp chassi
 
     // === SUBSYSTEM OBJECTS === \\
     private final Shooter objShooter = new Shooter();
@@ -85,7 +86,7 @@ public class RobotContainer {
         );
 
         objShooter.setDefaultCommand(
-            new RunCommand(()->objShooter.runShooter(0.1), objShooter)
+            new RunCommand(()->objShooter.runShooter(0.15), objShooter)
         );
         
         // Idle while the robot is disabled. This ensures the configured
@@ -117,27 +118,34 @@ public class RobotContainer {
         
 
 
-       // xboxOperator.a().whileTrue(new RunCommand(() -> objShooter.runShooter(MotorSpeeds.dShooterSpeed), objShooter))
-       //                 .whileFalse(new RunCommand(() -> objShooter.stopShooter(), objShooter));
+    //    xboxOperator.a().whileTrue(new RunCommand(() -> objShooter.runShooter(MotorSpeeds.dShooterSpeed), objShooter))
+    //                    .whileFalse(new RunCommand(() -> objShooter.stopShooter(), objShooter));
         
-        //xboxOperator.b().whileTrue(new RunCommand(() -> objFeeder.runFeeder(MotorSpeeds.dFeederSpeed), objFeeder))
-        //                .whileFalse(new RunCommand(() -> objFeeder.stopFeeder(), objFeeder));
+    //     xboxOperator.b().whileTrue(new RunCommand(() -> objFeeder.runFeeder(MotorSpeeds.dFeederSpeed), objFeeder))
+    //                    .whileFalse(new RunCommand(() -> objFeeder.stopFeeder(), objFeeder));
 
-       // xboxOperator.y().whileTrue(new RunCommand(()-> objIndexer. runIndexer(MotorSpeeds.dIndexerSpeed), objIndexer))
-                        // .whileFalse(new RunCommand(()-> objIndexer.stopIndexer(), objIndexer));
+    //    xboxOperator.y().whileTrue(new RunCommand(()-> objIndexer. runIndexer(MotorSpeeds.dIndexerSpeed), objIndexer))
+    //                     .whileFalse(new RunCommand(()-> objIndexer.stopIndexer(), objIndexer));
 
 
 
         xboxDriver.a ().whileTrue(new RunCommand(() -> objShooter.runShooter(MotorSpeeds.dShooterSpeed), objShooter));
                     //    .whileFalse(new RunCommand(() -> objShooter.setDefaultCommand(0.15), objShooter) );
         
-        xboxDriver. rightTrigger() .whileTrue(new FireNTheHole(objFeeder, objIndexer)
-                                    .until(() -> xboxDriver.getRightTriggerAxis() < 0.01)
-        );
+        xboxDriver.axisGreaterThan(2, 0.5).whileTrue(new ShooterFull(objShooter, objFeeder, objIndexer));
 
-        xboxDriver.b().whileTrue(new PhotonDrive(drivetrain, MaxSpeed, MaxAngularRate));
-                                  
+        xboxDriver.b().whileTrue(new Photon_Lock(drivetrain, MaxSpeed, MaxAngularRate,
+            () -> xboxDriver.getLeftX(), 
+            () -> xboxDriver.getLeftY()));
 
+        xboxDriver.rightTrigger().whileTrue(new FireNTheHole(objFeeder, objIndexer));
+                             
+        
+            
+            // === SHOOTER TESTING === \\
+        // xboxDriver.a().whileTrue(new ManualFire(objFeeder, objShooter, 0.4, 0.5));
+        // xboxDriver.x().whileTrue(new ManualFire(objFeeder, objShooter, 0.6, 0.5));
+        xboxDriver.y().whileTrue(new ManualFire(objFeeder, objShooter, MotorSpeeds.dShooterRPM, MotorSpeeds.dFeederSpeed));
 
         xboxOperator.axisGreaterThan(2, 0.5).whileTrue(new ShooterFull(objShooter, objFeeder, objIndexer));
 

@@ -21,17 +21,20 @@ public final class Constants {
     public static final int iIntake = 13;
     public static final int iHopperExtender = 14;
     public static final int iIndexer = 15;
-    public static final int iFeeder = 19;
-    public static final int iHood = 17;
-    public static final int iShooter = 18;
-    //public static final int iClimbR = 19;
-    //public static final int iClimbL = 20;
+    public static final int iFeederLeader = 16;
+    public static final int iFeederFollower = 17;
+    public static final int iHood = 18;
+    public static final int iShooterLeader = 19;
+    public static final int iShooterFollower = 20;
+    //public static final int iClimbR = ;
+    //public static final int iClimbL = ;
   }
 
   public static class MotorSpeeds{
-    public static final double dShooterSpeed = 0.8;
-    public static final double dFeederSpeed = 0.8;
-    public static final double dIndexerSpeed = -0.5;
+    public static final double dShooterSpeed = 0.75;
+    public static final double dShooterRPM = 4000;
+    public static final double dFeederSpeed = 0.6;
+    public static final double dIndexerSpeed = 1.0;
   }
   public static class MotorPositions{
    // public static final Pos dshooterHood = 
