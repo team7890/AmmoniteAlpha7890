@@ -16,11 +16,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Photon extends SubsystemBase {
 
-  static PhotonCamera objCamera = new PhotonCamera("Dragon");
+  static PhotonCamera objCamera = new PhotonCamera("dragon");
     static double dYaw;
     static double dPitch;
     static double dArea;
     double dSkew;
+
+    static double dDistance;
     
     /** Creates a new Photon. */
     public Photon() {
@@ -129,6 +131,24 @@ public class Photon extends SubsystemBase {
     // Transform3d bestCameraToTarget = target.getBestCameraToTarget();
     // Transform3d alternateCameraToTarget = target.getAlternateCameraToTarget();
     return dSkew;
+  }
+
+  public double PhotonDist(){
+    var result = objCamera.getLatestResult();
+    boolean bHasTarget = result.hasTargets();
+    List<PhotonTrackedTarget> targetsList = result.getTargets();
+    PhotonTrackedTarget target = result.getBestTarget();
+
+    int targetID = target.getFiducialId();
+    double poseAmbiguity = target.getPoseAmbiguity();
+    Transform3d bestCameraToTarget = target.getBestCameraToTarget();
+    Transform3d alternateCameraToTarget = target.getAlternateCameraToTarget();
+
+    if (bHasTarget) {
+      dDistance = bestCameraToTarget.getX();
+      return dDistance;
+    }
+    else return 7890.0;
   }
   @Override
   public void periodic() {
