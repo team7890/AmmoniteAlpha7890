@@ -4,31 +4,27 @@
 
 package frc.robot.commands;
 
-import frc.robot.Constants.MotorSpeeds;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.subsystems.Shooter.Feeder;
-import frc.robot.subsystems.Hopper.Indexer;
+import frc.robot.subsystems.Shooter.Shooter;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ShooterFull extends SequentialCommandGroup {
-  /** Creates a new ShooterFull. */
-  public ShooterFull(Shooter objShooter, Feeder objFeeder, Indexer objIndexer) {
+public class ManualFire extends SequentialCommandGroup {
+  /** Creates a new ManualFire. */
+  public ManualFire(Feeder objFeeder, Shooter objShooter, double dShootRPM, double dFeedSpeed) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new RunCommand(() -> objShooter.runShooter(MotorSpeeds.dShooterSpeed), objShooter).until(objShooter.bsShooterFast()),
-      new ParallelRaceGroup(
-        new RunCommand(() -> objShooter.runShooter(MotorSpeeds.dShooterSpeed), objShooter),
-        new FireNTheHole(objFeeder, objIndexer)
+      new RunCommand(() -> objShooter.runShooterRPM(dShootRPM), objShooter).withTimeout(0.5),
+      new ParallelCommandGroup(
+        new RunCommand(() -> objShooter.runShooterRPM(dShootRPM), objShooter),
+        new RunCommand(() -> objFeeder.runFeeder(dFeedSpeed), objFeeder)
       )
+      
     );
   }
 }
