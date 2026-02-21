@@ -46,7 +46,7 @@ public class PhotonShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    new Photon_Lock(objDrive, 0, 0, , );
+    //new Photon_Lock(objDrive, 0, 0, , );
     objShooter.runShooterRPM(
       objShooter.getDistance2RPM(
         objPhoton.PhotonDist()
