@@ -20,7 +20,8 @@ public final class Constants {
   public static class MotorIDs {
     public static final int iIntake = 13;
     public static final int iHopperExtender = 14;
-    public static final int iIndexer = 15;
+    public static final int iIndexerLeader = 15;
+    public static final int iIndexerFollower = 21;
     public static final int iFeederLeader = 16;
     public static final int iFeederFollower = 17;
     public static final int iHood = 18;
@@ -32,9 +33,10 @@ public final class Constants {
 
   public static class MotorSpeeds{
     public static final double dShooterSpeed = 0.75;
-    public static final double dShooterRPM = 4000;
-    public static final double dFeederSpeed = 0.6;
+    public static final double dShooterRPM = 2950;
+    public static final double dFeederSpeed = 1.0;
     public static final double dIndexerSpeed = 1.0;
+    public static final double dIntakeSpeed = 0.5;
   }
   public static class MotorPositions{
    // public static final Pos dshooterHood = 

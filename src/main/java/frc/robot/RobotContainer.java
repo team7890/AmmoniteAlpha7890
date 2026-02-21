@@ -8,8 +8,12 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -24,9 +28,11 @@ import frc.robot.commands.ShooterFull;
 import frc.robot.generated.TunerConstants;
 // import frc.robot.generated.TunerConstants_comp;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Hopper.Extender;
 import frc.robot.subsystems.Hopper.Indexer;
 import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.subsystems.Shooter.Feeder;
+import frc.robot.subsystems.Hopper.Intake;
 
 import frc.robot.commands.FireNTheHole;
 import frc.robot.commands.ManualFire;
@@ -57,10 +63,19 @@ public class RobotContainer {
     private final Shooter objShooter = new Shooter();
     private final Feeder objFeeder = new Feeder();
     private final Indexer objIndexer = new Indexer();
+    private final Intake objIntake = new Intake();
+    private final Extender objExtender = new Extender();
+
+    // === PathPlanner === \\
+    private final SendableChooser<Command> autoChooser;
 
     
     public RobotContainer() {
+        autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auto Chooser", autoChooser);
         configureBindings();
+
+        NamedCommands.registerCommand("run Shooter", new RunCommand(() -> objShooter.runShooterRPM(MotorSpeeds.dShooterRPM)));
     }
 
     private void configureBindings() {
@@ -88,6 +103,14 @@ public class RobotContainer {
         objShooter.setDefaultCommand(
             new RunCommand(()->objShooter.runShooter(0.15), objShooter)
         );
+
+        objExtender.setDefaultCommand(
+            new RunCommand(() -> objExtender.stopExtender(), objExtender)
+        );
+
+        objIntake.setDefaultCommand(
+            new RunCommand(() -> objIntake.stopIntake(), objIntake)
+        );
         
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
@@ -103,10 +126,10 @@ public class RobotContainer {
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        xboxDriver.back().and(xboxDriver.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        xboxDriver.back().and(xboxDriver.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        xboxDriver.start().and(xboxDriver.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        xboxDriver.start().and(xboxDriver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        // xboxDriver.back().and(xboxDriver.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        // xboxDriver.back().and(xboxDriver.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        // xboxDriver.start().and(xboxDriver.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        // xboxDriver.start().and(xboxDriver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // Reset the field-centric heading on leftbumper press.
         xboxDriver.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
@@ -129,25 +152,31 @@ public class RobotContainer {
 
 
 
-        xboxDriver.a ().whileTrue(new RunCommand(() -> objShooter.runShooter(MotorSpeeds.dShooterSpeed), objShooter));
+        // xboxDriver.a ().whileTrue(new RunCommand(() -> objShooter.runShooter(MotorSpeeds.dShooterSpeed), objShooter));
                     //    .whileFalse(new RunCommand(() -> objShooter.setDefaultCommand(0.15), objShooter) );
         
-        xboxDriver.axisGreaterThan(2, 0.5).whileTrue(new ShooterFull(objShooter, objFeeder, objIndexer));
+        xboxDriver.axisGreaterThan(2, 0.5).whileTrue(new ShooterFull(objShooter, objFeeder, objIndexer,objIntake));
 
-        xboxDriver.b().whileTrue(new Photon_Lock(drivetrain, MaxSpeed, MaxAngularRate,
+        xboxDriver.rightBumper().whileTrue(new Photon_Lock(drivetrain, MaxSpeed, MaxAngularRate,
             () -> xboxDriver.getLeftX(), 
             () -> xboxDriver.getLeftY()));
 
-        xboxDriver.rightTrigger().whileTrue(new FireNTheHole(objFeeder, objIndexer));
+        // xboxDriver.rightTrigger().whileTrue(new FireNTheHole(objFeeder, objIndexer, objIntake));
+
+        // xboxDriver.x () .whileTrue(new RunCommand(()-> objIndexer.runIndexer(MotorSpeeds.dIndexerSpeed), objIndexer));
                              
-        
+        xboxDriver.leftBumper() . whileTrue(new RunCommand(()-> objIntake.runIntake(MotorSpeeds.dIntakeSpeed),objIntake));
+                                // .whileFalse(new RunCommand(()-> objIntake. stopIntake(), objIntake));
             
             // === SHOOTER TESTING === \\
-        // xboxDriver.a().whileTrue(new ManualFire(objFeeder, objShooter, 0.4, 0.5));
-        // xboxDriver.x().whileTrue(new ManualFire(objFeeder, objShooter, 0.6, 0.5));
-        xboxDriver.y().whileTrue(new ManualFire(objFeeder, objShooter, MotorSpeeds.dShooterRPM, MotorSpeeds.dFeederSpeed));
+        // xboxDriver.a().whileTrue(new ManualFire(objFeeder, objShooter, MotorSpeeds.dShooterRPM, MotorSpeeds.dFeederSpeed));
+        // xboxDriver.x().whileTrue(new ManualFire(objFeeder, objShooter, 2000, 0.5));
+        // xboxDriver.y().whileTrue(new ManualFire(objFeeder, objShooter, 3000, MotorSpeeds.dFeederSpeed));
+        xboxDriver.a().whileTrue(new RunCommand(() -> objIndexer.runIndexer(0.5), objIndexer));
 
-        xboxOperator.axisGreaterThan(2, 0.5).whileTrue(new ShooterFull(objShooter, objFeeder, objIndexer));
+        xboxDriver.b().whileTrue(new RunCommand(() -> objExtender.runExtender(0.1), objExtender));
+
+        xboxOperator.axisGreaterThan(2, 0.5).whileTrue(new ShooterFull(objShooter, objFeeder, objIndexer, objIntake));
 
         
 
@@ -156,20 +185,22 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // Simple drive forward auton
-        final var idle = new SwerveRequest.Idle();
-        return Commands.sequence(
-            // Reset our field centric heading to match the robot
-            // facing away from our alliance station wall (0 deg).
-            drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
-            // Then slowly drive forward (away from us) for 5 seconds.
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(0.5)
-                    .withVelocityY(0)
-                    .withRotationalRate(0)
-            )
-            .withTimeout(5.0),
-            // Finally idle for the rest of auton
-            drivetrain.applyRequest(() -> idle)
-        );
+        // final var idle = new SwerveRequest.Idle();
+        // return Commands.sequence(
+        //     // Reset our field centric heading to match the robot
+        //     // facing away from our alliance station wall (0 deg).
+        //     drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
+        //     // Then slowly drive forward (away from us) for 5 seconds.
+        //     drivetrain.applyRequest(() ->
+        //         drive.withVelocityX(0.5)
+        //             .withVelocityY(0)
+        //             .withRotationalRate(0)
+        //     )
+        //     .withTimeout(5.0),
+        //     // Finally idle for the rest of auton
+        //     drivetrain.applyRequest(() -> idle)
+        // );
+
+        return autoChooser.getSelected();
     }
 }
