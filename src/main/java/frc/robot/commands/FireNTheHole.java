@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Shooter.Feeder;
 import frc.robot.subsystems.Hopper.Indexer;
 import frc.robot.subsystems.Shooter.Shooter;
+import frc.robot.subsystems.Hopper.Intake;
 import frc.robot.Constants.MotorSpeeds;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -18,7 +19,7 @@ import frc.robot.Constants.MotorSpeeds;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class FireNTheHole extends SequentialCommandGroup {
   /** Creates a new FireNTheHole. */
-  public FireNTheHole(Feeder objFeeder, Indexer objIndexer) {
+  public FireNTheHole(Feeder objFeeder, Indexer objIndexer, Intake objIntake) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
@@ -26,6 +27,7 @@ public class FireNTheHole extends SequentialCommandGroup {
      new ParallelCommandGroup(
         new RunCommand(()-> objFeeder. runFeeder(MotorSpeeds.dFeederSpeed), objFeeder),
        new RunCommand(()-> objIndexer. runIndexer(MotorSpeeds.dIndexerSpeed), objIndexer)
+       //new RunCommand(()-> objIntake. runIntake(MotorSpeeds.dFeederSpeed), objIntake)
         )
       );
 

@@ -77,7 +77,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public BooleanSupplier bsShooterFast(){
-    if (getSpeedRPM() > 3000.0) {
+    if (getSpeedRPM() > 1000.0) {
       return () -> true;
     }
     
