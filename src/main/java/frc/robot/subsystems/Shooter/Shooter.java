@@ -38,6 +38,8 @@ public class Shooter extends SubsystemBase {
   private StatusSignal objStatusSignal;
   public boolean bShooterSpeed = false;
   StatusSignal objStatSig;
+
+  private double distTest;
   
   /** Creates a new Shooter. */
   public Shooter() {
@@ -74,6 +76,8 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Shooter Speed RPM", getSpeedRPM());
+    distTest = SmartDashboard.getNumber("distance test", 1.0);
+    SmartDashboard.putNumber("RPM Interp result", getDistance2RPM(distTest));
   }
 
   public BooleanSupplier bsShooterFast(){
